@@ -450,11 +450,23 @@ class _ResultScreenState extends State<ResultScreen> {
   int _scoreKeywordFreq() {
     if (_seoResult.keywordScores.isEmpty) return 0;
     final freq = _seoResult.keywordScores.first.frequency;
-    if (freq >= 8) return 25;
-    if (freq >= 5) return 19;
-    if (freq >= 3) return 13;
-    if (freq >= 1) return 6;
-    return 0;
+    int base;
+    if (freq >= 8) {
+      base = 25;
+    } else if (freq >= 5) {
+      base = 19;
+    } else if (freq >= 3) {
+      base = 13;
+    } else if (freq >= 1) {
+      base = 6;
+    } else {
+      base = 0;
+    }
+    // 서브 키워드 감점 반영
+    for (int i = 1; i < _seoResult.keywordScores.length; i++) {
+      base += _seoResult.keywordScores[i].score; // score is negative penalty
+    }
+    return base.clamp(0, 25);
   }
 
   List<Widget> _buildKeywordResults() {
@@ -520,11 +532,9 @@ class _ResultScreenState extends State<ResultScreen> {
                 ],
               ),
             ),
-            IconButton(
-              icon: Icon(Icons.close, size: 18, color: Colors.grey.shade400),
-              onPressed: () => _removeKeyword(index),
-              constraints: const BoxConstraints(),
-              padding: EdgeInsets.zero,
+            GestureDetector(
+              onTap: () => _removeKeyword(index),
+              child: Icon(Icons.close, size: 18, color: Colors.grey.shade400),
             ),
           ],
         ),

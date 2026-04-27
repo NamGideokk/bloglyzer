@@ -42,18 +42,26 @@ class SeoScorer {
       score: primaryScore,
     ));
 
+    int subPenalty = 0;
     for (int i = 1; i < keywords.length; i++) {
       final keyword = keywords[i];
       final frequency = _countKeyword(analysis.bodyText, keyword);
+      final penalty = _subKeywordPenalty(frequency);
+      subPenalty += penalty;
       keywordScores.add(KeywordScore(
         keyword: keyword,
         frequency: frequency,
         inTitle: analysis.title.contains(keyword),
-        score: 0,
+        score: -penalty,
       ));
+      if (penalty > 0) {
+        comments.add(
+            "서브 키워드 '$keyword'이(가) ${frequency == 0 ? '본문에 포함되어 있지 않습니다' : '$frequency회만 사용되었습니다'}. 5회 이상 자연스럽게 추가하세요.");
+      }
     }
 
-    final totalScore = charScore + imageScore + freqScore + titleScore;
+    final adjustedFreqScore = (freqScore - subPenalty).clamp(0, 25);
+    final totalScore = charScore + imageScore + adjustedFreqScore + titleScore;
 
     return SeoResult(
       charScore: charScore,
@@ -83,6 +91,13 @@ class SeoScorer {
     if (count >= 5) return 18;
     if (count >= 1) return 12;
     return 0;
+  }
+
+  int _subKeywordPenalty(int frequency) {
+    if (frequency >= 5) return 0;
+    if (frequency >= 3) return 1;
+    if (frequency >= 1) return 2;
+    return 3;
   }
 
   int _scoreKeywordFrequency(int count) {
