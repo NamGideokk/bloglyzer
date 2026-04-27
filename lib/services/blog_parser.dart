@@ -121,7 +121,6 @@ class BlogParser {
 
     final title = _extractTitle(document);
     final bodyText = _extractBodyText(document);
-    final firstParagraph = _extractFirstParagraph(document);
     final imageCount = _countImages(document);
 
     if (bodyText.isEmpty) {
@@ -131,7 +130,6 @@ class BlogParser {
     return BlogAnalysis(
       title: title,
       bodyText: bodyText,
-      firstParagraph: firstParagraph,
       totalCharCount: bodyText.length,
       charCountNoSpaces: bodyText.replaceAll(RegExp(r'\s'), '').length,
       imageCount: imageCount,
@@ -178,31 +176,6 @@ class BlogParser {
     final oldContainer = document.querySelector('#postViewArea');
     if (oldContainer != null) {
       return oldContainer.text.trim();
-    }
-
-    return '';
-  }
-
-  String _extractFirstParagraph(Document document) {
-    // SmartEditor ONE
-    final seContainer = document.querySelector('.se-main-container');
-    if (seContainer != null) {
-      final firstPara = seContainer.querySelector('.se-text-paragraph');
-      if (firstPara != null) {
-        return firstPara.text.trim();
-      }
-    }
-
-    // Old editor
-    final oldContainer = document.querySelector('#postViewArea');
-    if (oldContainer != null) {
-      final firstP = oldContainer.querySelector('p');
-      if (firstP != null) {
-        return firstP.text.trim();
-      }
-      // Take first 200 chars
-      final text = oldContainer.text.trim();
-      return text.length > 200 ? text.substring(0, 200) : text;
     }
 
     return '';

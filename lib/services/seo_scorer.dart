@@ -12,9 +12,8 @@ class SeoScorer {
     final keywordScores = <KeywordScore>[];
 
     if (keywords.isEmpty) {
-      // 키워드 없을 때: 50점 만점을 100점 스케일로 환산
       final baseScore = charScore + imageScore;
-      final totalScore = (baseScore / 50 * 100).round();
+      final totalScore = (baseScore / 60 * 100).round();
 
       return SeoResult(
         charScore: charScore,
@@ -25,31 +24,24 @@ class SeoScorer {
       );
     }
 
-    // 첫 번째 키워드(메인 키워드) 기준으로 점수 계산
     final primaryKeyword = keywords.first;
     final primaryFrequency = _countKeyword(analysis.bodyText, primaryKeyword);
     final primaryInTitle = analysis.title.contains(primaryKeyword);
-    final primaryInFirstPara =
-        analysis.firstParagraph.contains(primaryKeyword);
 
     final freqScore = _scoreKeywordFrequency(primaryFrequency);
     final titleScore = primaryInTitle ? 15 : 0;
-    final firstParaScore = primaryInFirstPara ? 15 : 0;
-    final primaryScore = freqScore + titleScore + firstParaScore;
+    final primaryScore = freqScore + titleScore;
 
     comments.addAll(
-        _keywordComments(primaryKeyword, primaryFrequency, primaryInTitle,
-            primaryInFirstPara));
+        _keywordComments(primaryKeyword, primaryFrequency, primaryInTitle));
 
     keywordScores.add(KeywordScore(
       keyword: primaryKeyword,
       frequency: primaryFrequency,
       inTitle: primaryInTitle,
-      inFirstParagraph: primaryInFirstPara,
       score: primaryScore,
     ));
 
-    // 나머지 키워드는 빈도 정보만 표시
     for (int i = 1; i < keywords.length; i++) {
       final keyword = keywords[i];
       final frequency = _countKeyword(analysis.bodyText, keyword);
@@ -57,13 +49,11 @@ class SeoScorer {
         keyword: keyword,
         frequency: frequency,
         inTitle: analysis.title.contains(keyword),
-        inFirstParagraph: analysis.firstParagraph.contains(keyword),
         score: 0,
       ));
     }
 
-    final totalScore =
-        charScore + imageScore + freqScore + titleScore + firstParaScore;
+    final totalScore = charScore + imageScore + freqScore + titleScore;
 
     return SeoResult(
       charScore: charScore,
@@ -80,26 +70,26 @@ class SeoScorer {
   }
 
   int _scoreCharCount(int count) {
-    if (count >= 2500) return 25;
-    if (count >= 1500) return 20;
-    if (count >= 1000) return 15;
-    if (count >= 500) return 10;
-    return 5;
+    if (count >= 2500) return 30;
+    if (count >= 1500) return 24;
+    if (count >= 1000) return 18;
+    if (count >= 500) return 12;
+    return 6;
   }
 
   int _scoreImageCount(int count) {
-    if (count >= 15) return 25;
-    if (count >= 10) return 20;
-    if (count >= 5) return 15;
-    if (count >= 1) return 10;
+    if (count >= 15) return 30;
+    if (count >= 10) return 24;
+    if (count >= 5) return 18;
+    if (count >= 1) return 12;
     return 0;
   }
 
   int _scoreKeywordFrequency(int count) {
-    if (count >= 8) return 20;
-    if (count >= 5) return 15;
-    if (count >= 3) return 10;
-    if (count >= 1) return 5;
+    if (count >= 8) return 25;
+    if (count >= 5) return 19;
+    if (count >= 3) return 13;
+    if (count >= 1) return 6;
     return 0;
   }
 
@@ -129,7 +119,7 @@ class SeoScorer {
   }
 
   List<String> _keywordComments(
-      String keyword, int frequency, bool inTitle, bool inFirstPara) {
+      String keyword, int frequency, bool inTitle) {
     final comments = <String>[];
 
     if (frequency == 0) {
@@ -145,11 +135,6 @@ class SeoScorer {
     if (!inTitle) {
       comments.add(
           "메인 키워드 '$keyword'이(가) 제목에 포함되어 있지 않습니다. 제목에 키워드를 넣으면 검색 노출에 유리합니다.");
-    }
-
-    if (!inFirstPara) {
-      comments.add(
-          "메인 키워드 '$keyword'이(가) 첫 문단에 포함되어 있지 않습니다. 도입부에 키워드를 배치하면 SEO에 효과적입니다.");
     }
 
     return comments;

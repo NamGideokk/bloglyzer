@@ -1,7 +1,6 @@
 class BlogAnalysis {
   final String title;
   final String bodyText;
-  final String firstParagraph;
   final int totalCharCount;
   final int charCountNoSpaces;
   final int imageCount;
@@ -9,7 +8,6 @@ class BlogAnalysis {
   BlogAnalysis({
     required this.title,
     required this.bodyText,
-    required this.firstParagraph,
     required this.totalCharCount,
     required this.charCountNoSpaces,
     required this.imageCount,
@@ -20,7 +18,6 @@ class KeywordScore {
   final String keyword;
   final int frequency;
   final bool inTitle;
-  final bool inFirstParagraph;
   final int score;
   final String? comment;
 
@@ -28,7 +25,6 @@ class KeywordScore {
     required this.keyword,
     required this.frequency,
     required this.inTitle,
-    required this.inFirstParagraph,
     required this.score,
     this.comment,
   });

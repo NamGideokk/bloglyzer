@@ -218,9 +218,9 @@ class _ResultScreenState extends State<ResultScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  _buildScoreDetail('글자수 점수', _seoResult.charScore, 25),
+                  _buildScoreDetail('글자수 점수', _seoResult.charScore, 30),
                   const SizedBox(height: 8),
-                  _buildScoreDetail('이미지 점수', _seoResult.imageScore, 25),
+                  _buildScoreDetail('이미지 점수', _seoResult.imageScore, 30),
                   if (_keywords.isNotEmpty) ...[
                     const SizedBox(height: 8),
                     _buildScoreDetail(
@@ -228,20 +228,12 @@ class _ResultScreenState extends State<ResultScreen> {
                         _seoResult.keywordScores.isNotEmpty
                             ? _scoreKeywordFreq()
                             : 0,
-                        20),
+                        25),
                     const SizedBox(height: 8),
                     _buildScoreDetail(
                         '제목 키워드',
                         _seoResult.keywordScores.isNotEmpty &&
                                 _seoResult.keywordScores.first.inTitle
-                            ? 15
-                            : 0,
-                        15),
-                    const SizedBox(height: 8),
-                    _buildScoreDetail(
-                        '첫 문단 키워드',
-                        _seoResult.keywordScores.isNotEmpty &&
-                                _seoResult.keywordScores.first.inFirstParagraph
                             ? 15
                             : 0,
                         15),
@@ -378,10 +370,10 @@ class _ResultScreenState extends State<ResultScreen> {
   int _scoreKeywordFreq() {
     if (_seoResult.keywordScores.isEmpty) return 0;
     final freq = _seoResult.keywordScores.first.frequency;
-    if (freq >= 8) return 20;
-    if (freq >= 5) return 15;
-    if (freq >= 3) return 10;
-    if (freq >= 1) return 5;
+    if (freq >= 8) return 25;
+    if (freq >= 5) return 19;
+    if (freq >= 3) return 13;
+    if (freq >= 1) return 6;
     return 0;
   }
 
@@ -439,7 +431,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '본문 ${ks.frequency}회  |  제목 ${ks.inTitle ? "O" : "X"}  |  첫문단 ${ks.inFirstParagraph ? "O" : "X"}',
+                    '본문 ${ks.frequency}회  |  제목 ${ks.inTitle ? "O" : "X"}',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey.shade600,
