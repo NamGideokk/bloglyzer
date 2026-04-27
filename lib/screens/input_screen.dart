@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../services/blog_parser.dart';
 import 'result_screen.dart';
@@ -12,12 +13,14 @@ class InputScreen extends StatefulWidget {
 
 class _InputScreenState extends State<InputScreen> {
   final _urlController = TextEditingController();
+  final _focusNode = FocusNode();
   final _parser = BlogParser();
   bool _isLoading = false;
 
   @override
   void dispose() {
     _urlController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -64,12 +67,14 @@ class _InputScreenState extends State<InputScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
+    return GestureDetector(
+      onTap: () => _focusNode.unfocus(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -90,69 +95,79 @@ class _InputScreenState extends State<InputScreen> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                TextField(
-                  controller: _urlController,
-                  decoration: InputDecoration(
-                    hintText: '네이버 블로그 URL을 입력하세요',
-                    hintStyle: TextStyle(color: Colors.grey.shade400),
-                    filled: true,
-                    fillColor: Colors.grey.shade50,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide:
-                          const BorderSide(color: Color(0xFF03C75A), width: 2),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 14),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.clear, size: 18, color: Colors.grey.shade400),
-                      onPressed: () => _urlController.clear(),
-                    ),
-                  ),
-                  keyboardType: TextInputType.url,
-                  textInputAction: TextInputAction.go,
-                  onSubmitted: (_) => _analyze(),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _analyze,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF03C75A),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2.5,
-                            ),
-                          )
-                        : const Text(
-                            '분석하기',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _urlController,
+                        focusNode: _focusNode,
+                        decoration: InputDecoration(
+                          hintText: '네이버 블로그 URL을 입력하세요',
+                          hintStyle: TextStyle(color: Colors.grey.shade400),
+                          filled: true,
+                          fillColor: Colors.grey.shade50,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
                           ),
-                  ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(
+                                color: Color(0xFF03C75A), width: 2),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 14),
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear,
+                                size: 18, color: Colors.grey.shade400),
+                            onPressed: () => _urlController.clear(),
+                          ),
+                        ),
+                        keyboardType: TextInputType.url,
+                        textInputAction: TextInputAction.go,
+                        onSubmitted: (_) => _analyze(),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _analyze,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF03C75A),
+                          foregroundColor: Colors.white,
+                          shape: const CircleBorder(),
+                          padding: EdgeInsets.zero,
+                          elevation: 0,
+                        ),
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : SvgPicture.asset(
+                                'assets/icons/icon-search.svg',
+                                width: 22,
+                                height: 22,
+                                colorFilter: const ColorFilter.mode(
+                                    Colors.white, BlendMode.srcIn),
+                              ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
+          ),
           ),
         ),
       ),
