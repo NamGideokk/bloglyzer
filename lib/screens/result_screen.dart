@@ -183,27 +183,27 @@ class _ResultScreenState extends State<ResultScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '이미지 수',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
                         Row(
                           children: [
                             Text(
-                              '${analysis.imageCount}장',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF1A1A1A),
+                              '이미지 수',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade600,
                               ),
                             ),
                             if (analysis.imageUrls.isNotEmpty)
                               Icon(Icons.chevron_right,
-                                  size: 20, color: Colors.grey.shade400),
+                                  size: 18, color: Colors.grey.shade400),
                           ],
+                        ),
+                        Text(
+                          '${analysis.imageCount}장',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1A1A1A),
+                          ),
                         ),
                       ],
                     ),
