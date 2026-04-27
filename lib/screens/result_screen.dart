@@ -161,10 +161,10 @@ class _ResultScreenState extends State<ResultScreen> {
                 children: [
                   _buildStatRow(
                       '전체 글자수', '${_formatNumber(analysis.totalCharCount)}자'),
-                  const Divider(height: 24),
+                  const SizedBox(height: 16),
                   _buildStatRow('공백 제외 글자수',
                       '${_formatNumber(analysis.charCountNoSpaces)}자'),
-                  const Divider(height: 24),
+                  const SizedBox(height: 16),
                   _buildStatRow('이미지 수', '${analysis.imageCount}장'),
                 ],
               ),
