@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/blog_analysis.dart';
 import '../services/seo_scorer.dart';
@@ -111,14 +112,22 @@ class _ResultScreenState extends State<ResultScreen> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      widget.url,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey.shade600,
+                    child: GestureDetector(
+                      onTap: () {
+                        launchUrl(Uri.parse(widget.url),
+                            mode: LaunchMode.externalApplication);
+                      },
+                      child: Text(
+                        widget.url,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.blue.shade600,
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.blue.shade600,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   const SizedBox(width: 8),
