@@ -347,27 +347,34 @@ class _ResultScreenState extends State<ResultScreen> {
             ],
 
             // 키워드 분석 결과
-            if (_keywords.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              _buildSection(
-                key: _keywordSectionKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      '키워드 분석',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A1A1A),
-                      ),
+            const SizedBox(height: 16),
+            _buildSection(
+              key: _keywordSectionKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '키워드 분석',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1A1A1A),
                     ),
-                    const SizedBox(height: 12),
+                  ),
+                  const SizedBox(height: 12),
+                  if (_keywords.isEmpty)
+                    Text(
+                      '키워드를 추가해 주세요.',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey.shade400,
+                      ),
+                    )
+                  else
                     ..._buildKeywordResults(),
-                  ],
-                ),
+                ],
               ),
-            ],
+            ),
 
             const SizedBox(height: 32),
           ],
