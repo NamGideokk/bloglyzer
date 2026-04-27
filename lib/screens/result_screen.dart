@@ -17,6 +17,8 @@ class ResultScreen extends StatefulWidget {
 
 class _ResultScreenState extends State<ResultScreen> {
   final _keywordController = TextEditingController();
+  final _scrollController = ScrollController();
+  final _keywordSectionKey = GlobalKey();
   final _scorer = SeoScorer();
   final _keywords = <String>[];
   late SeoResult _seoResult;
@@ -30,6 +32,7 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   void dispose() {
     _keywordController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -53,6 +56,13 @@ class _ResultScreenState extends State<ResultScreen> {
       _keywords.add(keyword);
       _keywordController.clear();
       _recalculate();
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final context = _keywordSectionKey.currentContext;
+      if (context != null) {
+        Scrollable.ensureVisible(context,
+            duration: const Duration(milliseconds: 300));
+      }
     });
   }
 
@@ -88,10 +98,13 @@ class _ResultScreenState extends State<ResultScreen> {
         elevation: 0,
         scrolledUnderElevation: 0.5,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            controller: _scrollController,
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 90),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // URL
             _buildSection(
@@ -324,85 +337,103 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
             ],
 
-            const SizedBox(height: 16),
-
-            // 키워드 입력
-            _buildSection(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '키워드 분석',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A1A1A),
+            // 키워드 분석 결과
+            if (_keywords.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              _buildSection(
+                key: _keywordSectionKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '키워드 분석',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1A1A1A),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _keywordController,
-                          decoration: InputDecoration(
-                            hintText: '키워드 입력',
-                            hintStyle: TextStyle(color: Colors.grey.shade400),
-                            filled: true,
-                            fillColor: Colors.grey.shade50,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide:
-                                  BorderSide(color: Colors.grey.shade300),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide:
-                                  BorderSide(color: Colors.grey.shade300),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                  color: Color(0xFF03C75A), width: 2),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 10),
-                            isDense: true,
-                          ),
-                          textInputAction: TextInputAction.done,
-                          onSubmitted: (_) => _addKeyword(),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      SizedBox(
-                        height: 42,
-                        child: ElevatedButton(
-                          onPressed: _addKeyword,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF03C75A),
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                          ),
-                          child: const Text('추가'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (_keywords.isNotEmpty) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     ..._buildKeywordResults(),
                   ],
-                ],
+                ),
               ),
-            ),
+            ],
 
             const SizedBox(height: 32),
           ],
         ),
+      ),
+
+          // 하단 고정 키워드 입력란
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              padding: EdgeInsets.fromLTRB(
+                  16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  top: BorderSide(color: Colors.grey.shade200),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _keywordController,
+                      decoration: InputDecoration(
+                        hintText: '키워드 입력',
+                        hintStyle: TextStyle(color: Colors.grey.shade400),
+                        filled: true,
+                        fillColor: Colors.grey.shade50,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                              color: Color(0xFF03C75A), width: 2),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 10),
+                        isDense: true,
+                      ),
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (_) => _addKeyword(),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    height: 42,
+                    child: ElevatedButton(
+                      onPressed: _addKeyword,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF03C75A),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      child: const Text('추가'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -492,8 +523,9 @@ class _ResultScreenState extends State<ResultScreen> {
     });
   }
 
-  Widget _buildSection({required Widget child}) {
+  Widget _buildSection({Key? key, required Widget child}) {
     return Container(
+      key: key,
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
