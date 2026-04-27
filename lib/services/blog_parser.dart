@@ -121,7 +121,7 @@ class BlogParser {
 
     final title = _extractTitle(document);
     final bodyText = _extractBodyText(document);
-    final imageCount = _countImages(document);
+    final imageUrls = _extractImageUrls(document);
 
     if (bodyText.isEmpty) {
       throw BlogParseException('포스트 내용을 파싱할 수 없습니다. 지원하지 않는 형식일 수 있습니다');
@@ -132,7 +132,7 @@ class BlogParser {
       bodyText: bodyText,
       totalCharCount: bodyText.length,
       charCountNoSpaces: bodyText.replaceAll(RegExp(r'\s'), '').length,
-      imageCount: imageCount,
+      imageUrls: imageUrls,
     );
   }
 
@@ -181,43 +181,50 @@ class BlogParser {
     return '';
   }
 
-  int _countImages(Document document) {
-    // SmartEditor ONE: count .se-image-resource (actual content images)
+  List<String> _extractImageUrls(Document document) {
+    List<Element> imgElements = [];
+
+    // SmartEditor ONE
     final seContainer = document.querySelector('.se-main-container');
     if (seContainer != null) {
       final images = seContainer.querySelectorAll('.se-image-resource');
-      if (images.isNotEmpty) return images.length;
-
-      // fallback: count img tags inside se-module-image
-      final moduleImages =
-          seContainer.querySelectorAll('.se-module-image img');
-      if (moduleImages.isNotEmpty) return moduleImages.length;
-
-      // last fallback: count all img in container, excluding stickers
-      final allImgs = seContainer.querySelectorAll('img');
-      return allImgs
-          .where((img) {
+      if (images.isNotEmpty) {
+        imgElements = images.toList();
+      } else {
+        final moduleImages =
+            seContainer.querySelectorAll('.se-module-image img');
+        if (moduleImages.isNotEmpty) {
+          imgElements = moduleImages.toList();
+        } else {
+          imgElements = seContainer.querySelectorAll('img').where((img) {
             final className = img.attributes['class'] ?? '';
             final src = img.attributes['src'] ?? '';
             return !className.contains('sticker') &&
                 !src.contains('storep-phinf.pstatic.net/ogq_');
-          })
-          .length;
+          }).toList();
+        }
+      }
+    } else {
+      // Old editor
+      final oldContainer = document.querySelector('#postViewArea');
+      if (oldContainer != null) {
+        imgElements = oldContainer.querySelectorAll('img').where((img) {
+          final className = img.attributes['class'] ?? '';
+          return !className.contains('emoticon') &&
+              !className.contains('sticker');
+        }).toList();
+      }
     }
 
-    // Old editor
-    final oldContainer = document.querySelector('#postViewArea');
-    if (oldContainer != null) {
-      final imgs = oldContainer.querySelectorAll('img');
-      return imgs
-          .where((img) {
-            final className = img.attributes['class'] ?? '';
-            return !className.contains('emoticon') &&
-                !className.contains('sticker');
-          })
-          .length;
-    }
-
-    return 0;
+    return imgElements
+        .map((img) {
+          var src = img.attributes['data-lazy-src'] ??
+              img.attributes['src'] ??
+              '';
+          if (src.startsWith('//')) src = 'https:$src';
+          return src;
+        })
+        .where((url) => url.isNotEmpty)
+        .toList();
   }
 }

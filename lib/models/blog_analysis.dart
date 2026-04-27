@@ -3,14 +3,15 @@ class BlogAnalysis {
   final String bodyText;
   final int totalCharCount;
   final int charCountNoSpaces;
-  final int imageCount;
+  final List<String> imageUrls;
+  int get imageCount => imageUrls.length;
 
   BlogAnalysis({
     required this.title,
     required this.bodyText,
     required this.totalCharCount,
     required this.charCountNoSpaces,
-    required this.imageCount,
+    required this.imageUrls,
   });
 }
 

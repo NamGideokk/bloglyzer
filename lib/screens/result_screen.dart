@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../models/blog_analysis.dart';
 import '../services/seo_scorer.dart';
+import 'image_gallery_screen.dart';
 
 class ResultScreen extends StatefulWidget {
   final BlogAnalysis analysis;
@@ -165,7 +166,48 @@ class _ResultScreenState extends State<ResultScreen> {
                   _buildStatRow('공백 제외 글자수',
                       '${_formatNumber(analysis.charCountNoSpaces)}자'),
                   const SizedBox(height: 16),
-                  _buildStatRow('이미지 수', '${analysis.imageCount}장'),
+                  GestureDetector(
+                    onTap: analysis.imageUrls.isNotEmpty
+                        ? () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ImageGalleryScreen(
+                                  imageUrls: analysis.imageUrls,
+                                  title: analysis.title,
+                                ),
+                              ),
+                            );
+                          }
+                        : null,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '이미지 수',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              '${analysis.imageCount}장',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1A1A1A),
+                              ),
+                            ),
+                            if (analysis.imageUrls.isNotEmpty)
+                              Icon(Icons.chevron_right,
+                                  size: 20, color: Colors.grey.shade400),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
