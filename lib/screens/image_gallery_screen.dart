@@ -12,6 +12,8 @@ class ImageGalleryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomSafe = MediaQuery.of(context).padding.bottom;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -22,7 +24,7 @@ class ImageGalleryScreen extends StatelessWidget {
         scrolledUnderElevation: 0.5,
       ),
       body: GridView.builder(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.fromLTRB(8, 8, 8, 8 + bottomSafe),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           crossAxisSpacing: 4,
@@ -61,8 +63,11 @@ class ImageGalleryScreen extends StatelessWidget {
               errorBuilder: (context, error, stackTrace) {
                 return Container(
                   color: Colors.grey.shade100,
-                  child: Icon(Icons.broken_image,
-                      color: Colors.grey.shade400, size: 32),
+                  child: Icon(
+                    Icons.broken_image,
+                    color: Colors.grey.shade400,
+                    size: 32,
+                  ),
                 );
               },
             ),
@@ -130,8 +135,9 @@ class _ImageViewerScreenState extends State<_ImageViewerScreen> {
         },
         itemBuilder: (context, index) {
           return InteractiveViewer(
-            transformationController:
-                index == _currentIndex ? _transformationController : null,
+            transformationController: index == _currentIndex
+                ? _transformationController
+                : null,
             minScale: 1.0,
             maxScale: 5.0,
             onInteractionUpdate: (details) {
@@ -162,8 +168,11 @@ class _ImageViewerScreenState extends State<_ImageViewerScreen> {
                 },
                 errorBuilder: (context, error, stackTrace) {
                   return const Center(
-                    child: Icon(Icons.broken_image,
-                        color: Colors.white54, size: 48),
+                    child: Icon(
+                      Icons.broken_image,
+                      color: Colors.white54,
+                      size: 48,
+                    ),
                   );
                 },
               ),
