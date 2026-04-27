@@ -263,23 +263,21 @@ class _ResultScreenState extends State<ResultScreen> {
                   _buildScoreDetail('글자수 점수', _seoResult.charScore, 30),
                   const SizedBox(height: 8),
                   _buildScoreDetail('이미지 점수', _seoResult.imageScore, 30),
-                  if (_keywords.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    _buildScoreDetail(
-                        '키워드 빈도',
-                        _seoResult.keywordScores.isNotEmpty
-                            ? _scoreKeywordFreq()
-                            : 0,
-                        25),
-                    const SizedBox(height: 8),
-                    _buildScoreDetail(
-                        '제목 키워드',
-                        _seoResult.keywordScores.isNotEmpty &&
-                                _seoResult.keywordScores.first.inTitle
-                            ? 15
-                            : 0,
-                        15),
-                  ],
+                  const SizedBox(height: 8),
+                  _buildScoreDetail(
+                      '키워드 빈도',
+                      _seoResult.keywordScores.isNotEmpty
+                          ? _scoreKeywordFreq()
+                          : 0,
+                      25),
+                  const SizedBox(height: 8),
+                  _buildScoreDetail(
+                      '제목 키워드',
+                      _seoResult.keywordScores.isNotEmpty &&
+                              _seoResult.keywordScores.first.inTitle
+                          ? 15
+                          : 0,
+                      15),
                 ],
               ),
             ),
