@@ -112,6 +112,10 @@ class _InputScreenState extends State<InputScreen> {
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 14),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.clear, size: 18, color: Colors.grey.shade400),
+                      onPressed: () => _urlController.clear(),
+                    ),
                   ),
                   keyboardType: TextInputType.url,
                   textInputAction: TextInputAction.go,
