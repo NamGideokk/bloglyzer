@@ -36,7 +36,7 @@ class _InputScreenState extends State<InputScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => ResultScreen(analysis: analysis),
+          builder: (_) => ResultScreen(analysis: analysis, url: url),
         ),
       );
     } on BlogParseException catch (e) {

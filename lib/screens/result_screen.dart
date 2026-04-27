@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../models/blog_analysis.dart';
 import '../services/seo_scorer.dart';
 
 class ResultScreen extends StatefulWidget {
   final BlogAnalysis analysis;
+  final String url;
 
-  const ResultScreen({super.key, required this.analysis});
+  const ResultScreen({super.key, required this.analysis, required this.url});
 
   @override
   State<ResultScreen> createState() => _ResultScreenState();
@@ -90,6 +92,41 @@ class _ResultScreenState extends State<ResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // URL
+            _buildSection(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.url,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey.shade600,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: widget.url));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('URL이 복사되었습니다'),
+                          behavior: SnackBarBehavior.floating,
+                          duration: Duration(seconds: 1),
+                        ),
+                      );
+                    },
+                    child: Icon(Icons.copy, size: 16, color: Colors.grey.shade500),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
             // 제목
             _buildSection(
               child: Column(
