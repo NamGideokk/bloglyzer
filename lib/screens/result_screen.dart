@@ -20,14 +20,27 @@ class _ResultScreenState extends State<ResultScreen> {
   final _keywordController = TextEditingController();
   final _scrollController = ScrollController();
   final _keywordSectionKey = GlobalKey();
+  final _inputBarKey = GlobalKey();
   final _scorer = SeoScorer();
   final _keywords = <String>[];
   late SeoResult _seoResult;
+  double _inputBarHeight = 0;
 
   @override
   void initState() {
     super.initState();
     _recalculate();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _measureInputBar());
+  }
+
+  void _measureInputBar() {
+    final context = _inputBarKey.currentContext;
+    if (context != null) {
+      final height = context.size?.height ?? 0;
+      if (height != _inputBarHeight) {
+        setState(() => _inputBarHeight = height);
+      }
+    }
   }
 
   @override
@@ -103,7 +116,7 @@ class _ResultScreenState extends State<ResultScreen> {
         children: [
           SingleChildScrollView(
             controller: _scrollController,
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 90),
+            padding: EdgeInsets.fromLTRB(16, 16, 16, _inputBarHeight),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -281,7 +294,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       minHeight: 8,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
                   _buildScoreDetail('글자수 점수', _seoResult.charScore, 30),
                   const SizedBox(height: 8),
                   _buildScoreDetail('이미지 점수', _seoResult.imageScore, 30),
@@ -387,6 +400,7 @@ class _ResultScreenState extends State<ResultScreen> {
             right: 0,
             bottom: 0,
             child: Container(
+              key: _inputBarKey,
               padding: EdgeInsets.fromLTRB(
                   16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
               decoration: BoxDecoration(
@@ -553,7 +567,7 @@ class _ResultScreenState extends State<ResultScreen> {
     return Container(
       key: key,
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
