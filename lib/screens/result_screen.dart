@@ -80,6 +80,88 @@ class _ResultScreenState extends State<ResultScreen> {
     });
   }
 
+  void _showScoringInfo() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          'SEO 채점 기준',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _infoSection('글자수 (30점)', [
+                '2,500자 이상: 30점',
+                '1,500~2,499자: 24점',
+                '1,000~1,499자: 18점',
+                '500~999자: 12점',
+                '0~499자: 6점',
+              ]),
+              const SizedBox(height: 16),
+              _infoSection('이미지 수 (30점)', [
+                '15장 이상: 30점',
+                '10~14장: 24점',
+                '5~9장: 18점',
+                '1~4장: 12점',
+                '0장: 0점',
+              ]),
+              const SizedBox(height: 16),
+              _infoSection('키워드 빈도 (25점)', [
+                '메인 키워드 8회 이상: 25점',
+                '메인 키워드 5~7회: 19점',
+                '메인 키워드 3~4회: 13점',
+                '메인 키워드 1~2회: 6점',
+                '',
+                '서브 키워드 감점:',
+                '  0회: -3점 / 1~2회: -2점 / 3~4회: -1점',
+              ]),
+              const SizedBox(height: 16),
+              _infoSection('제목 키워드 (15점)', [
+                '메인 키워드가 제목에 포함: 15점',
+                '미포함: 0점',
+              ]),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('닫기', style: TextStyle(color: Color(0xFF03C75A))),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _infoSection(String title, List<String> items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF1A1A1A),
+          ),
+        ),
+        const SizedBox(height: 6),
+        ...items.map((item) => Padding(
+              padding: const EdgeInsets.only(bottom: 2),
+              child: Text(
+                item,
+                style: TextStyle(fontSize: 13, color: Colors.grey.shade600, height: 1.4),
+              ),
+            )),
+      ],
+    );
+  }
+
   void _removeKeyword(int index) {
     setState(() {
       _keywords.removeAt(index);
@@ -257,12 +339,27 @@ class _ResultScreenState extends State<ResultScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'SEO 점수',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF1A1A1A),
+                      GestureDetector(
+                        onTap: _showScoringInfo,
+                        child: Row(
+                          children: [
+                            const Text(
+                              'SEO 점수',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1A1A1A),
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'ⓘ',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Container(
