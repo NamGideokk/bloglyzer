@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -17,6 +18,7 @@ class _InputScreenState extends State<InputScreen> {
   final _focusNode = FocusNode();
   final _parser = BlogParser();
   bool _isLoading = false;
+  DateTime? _lastBackPressed;
 
   @override
   void initState() {
@@ -74,9 +76,28 @@ class _InputScreenState extends State<InputScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _focusNode.unfocus(),
-      child: Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        final now = DateTime.now();
+        if (_lastBackPressed != null &&
+            now.difference(_lastBackPressed!) < const Duration(seconds: 2)) {
+          SystemNavigator.pop();
+          return;
+        }
+        _lastBackPressed = now;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('한 번 더 누르면 종료됩니다'),
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      },
+      child: GestureDetector(
+        onTap: () => _focusNode.unfocus(),
+        child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Center(
@@ -185,6 +206,7 @@ class _InputScreenState extends State<InputScreen> {
                 ],
               ),
             ),
+          ),
           ),
         ),
       ),
