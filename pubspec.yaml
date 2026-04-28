@@ -38,7 +38,6 @@ dependencies:
   html: ^0.15.4
   url_launcher: ^6.2.0
   flutter_svg: ^2.0.10
-  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +64,13 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-Regular.ttf
+        - asset: assets/fonts/Montserrat-Bold.ttf
+          weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:
