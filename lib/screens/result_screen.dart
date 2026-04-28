@@ -300,20 +300,27 @@ class _ResultScreenState extends State<ResultScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              '이미지 수',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade600,
+                        Flexible(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  '이미지 수',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                            if (analysis.imageUrls.isNotEmpty)
-                              Icon(Icons.chevron_right,
-                                  size: 18, color: Colors.grey.shade400),
-                          ],
+                              if (analysis.imageUrls.isNotEmpty)
+                                Icon(Icons.chevron_right,
+                                    size: 18, color: Colors.grey.shade400),
+                            ],
+                          ),
                         ),
+                        const SizedBox(width: 8),
                         Text(
                           '${analysis.imageCount}장',
                           style: const TextStyle(
@@ -339,29 +346,36 @@ class _ResultScreenState extends State<ResultScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      GestureDetector(
-                        onTap: _showScoringInfo,
-                        child: Row(
-                          children: [
-                            const Text(
-                              'SEO 점수',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF1A1A1A),
+                      Flexible(
+                        child: GestureDetector(
+                          onTap: _showScoringInfo,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  'SEO 점수',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF1A1A1A),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'ⓘ',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade400,
+                              const SizedBox(width: 4),
+                              Text(
+                                'ⓘ',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade400,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
@@ -613,12 +627,15 @@ class _ResultScreenState extends State<ResultScreen> {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        ks.keyword,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF1A1A1A),
+                      Flexible(
+                        child: Text(
+                          ks.keyword,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF1A1A1A),
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       if (isPrimary) ...[
@@ -678,13 +695,17 @@ class _ResultScreenState extends State<ResultScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey.shade600,
+        Flexible(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade600,
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
+        const SizedBox(width: 8),
         Text(
           value,
           style: const TextStyle(
